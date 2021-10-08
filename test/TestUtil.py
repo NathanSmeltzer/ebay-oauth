@@ -18,7 +18,9 @@ limitations under the License.
 """
 import os, logging, json, time, urllib, re, yaml
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from decouple import config
+from webdriver_manager.chrome import ChromeDriverManager
 
 sandbox_key = "sandbox-user"
 production_key = "production-user"
@@ -46,7 +48,7 @@ def read_user_info(conf = None):
         
 def get_authorization_code(signin_url):
 
-    user_config_path = os.path.join(os.path.split(__file__)[0], 'config\\test-config-sample.yaml')
+    user_config_path = config('EBAY_USER_CREDENTIALS')
     read_user_info(user_config_path)
     
     env_key = production_key
@@ -55,8 +57,11 @@ def get_authorization_code(signin_url):
     
     userid = _user_credential_list[env_key][0]
     password = _user_credential_list[env_key][1]
-    
-    browser = webdriver.Chrome()
+
+    chrome_options = Options()
+    chrome_options.add_argument('--headless')
+    browser = webdriver.Chrome(ChromeDriverManager().install(),
+                              options=chrome_options)
     browser.get(signin_url)
     time.sleep(5)
 
