@@ -57,11 +57,12 @@ class TestGetApplicationCredential(unittest.TestCase):
         credentialutil.load(app_config_path)
         oauth2api_inst = oauth2api()
         signin_url = oauth2api_inst.generate_user_authorization_url(environment.SANDBOX, app_scopes)
+        # print(signin_url)
         code = TestUtil.get_authorization_code(signin_url)
-        # user_token = oauth2api_inst.exchange_code_for_access_token(environment.SANDBOX, code)
-        # self.assertIsNotNone(user_token.access_token)
-        # self.assertTrue(len(user_token.access_token) > 0)
-        # print('\n *** test_get_user_access_token ***:\n', user_token)
+        user_token = oauth2api_inst.exchange_code_for_access_token(environment.SANDBOX, code)
+        self.assertIsNotNone(user_token.access_token)
+        self.assertTrue(len(user_token.access_token) > 0)
+        print('\n *** test_get_user_access_token ***:\n', user_token)
 
     def test_exchange_refresh_for_access_token(self):
         app_config_path = os.path.join(os.path.split(__file__)[0], 'config', 'ebay-config-sample-user.yaml')

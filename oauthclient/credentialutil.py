@@ -18,6 +18,7 @@ limitations under the License.
 import yaml, json
 import logging
 from .model.model import environment, credentials
+from loguru import logger
 
 user_config_ids = ["sandbox-user", "production-user"]
 
@@ -60,7 +61,8 @@ class credentialutil(object):
     def get_credentials(cls, env_type):
         """
         env_config_id: environment.PRODUCTION.config_id or environment.SANDBOX.config_id
-        """    
+        """
+        logger.info(f"env_type in get_credentials: {env_type}")
         if len(cls._credential_list) == 0:
             msg = "No environment loaded from configuration file"
             logging.error(msg)

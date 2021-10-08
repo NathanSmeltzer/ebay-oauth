@@ -19,12 +19,19 @@ limitations under the License.
 import os, logging, json, time, urllib, re, yaml
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from decouple import config
+from decouple import config, UndefinedValueError
 from webdriver_manager.chrome import ChromeDriverManager
 
 sandbox_key = "sandbox-user"
 production_key = "production-user"
 _user_credential_list = {}
+
+try:  # instead of manually resetting headless value for testing issues. Getting from normal env file
+    headless_setting = config('HEADLESS', cast=bool)
+    # logger.warning(f"headless_setting in top of driver.py: {headless_setting}")
+except UndefinedValueError:
+    # logger.warning("defaulting to True for headless_setting")
+    headless_setting = True
 
 def read_user_info(conf = None):
 
@@ -59,17 +66,20 @@ def get_authorization_code(signin_url):
     password = _user_credential_list[env_key][1]
 
     chrome_options = Options()
-    chrome_options.add_argument('--headless')
+    if headless_setting:
+        chrome_options.add_argument('--headless')
     browser = webdriver.Chrome(ChromeDriverManager().install(),
                               options=chrome_options)
     browser.get(signin_url)
+    # time.sleep(3000)
     time.sleep(5)
 
-    form_userid = browser.find_element_by_name('userid')
-    form_pw = browser.find_element_by_name('pass')  
+    # form_userid = browser.find_element_by_name('userid')
+    form_userid = browser.find_element_by_id('userid')
+    # form_pw = browser.find_element_by_name('pass')
     
     form_userid.send_keys(userid)
-    form_pw.send_keys(password)    
+    # form_pw.send_keys(password)
     
     browser.find_element_by_id('sgnBt').submit()
 

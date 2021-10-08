@@ -3,3 +3,4 @@ requests==2.21.0
 PyYAML==5.1
 webdriver-manager
 python-decouple
+loguru
