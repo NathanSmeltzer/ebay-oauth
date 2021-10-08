@@ -5,7 +5,7 @@ products/local_settings.py
 #functional_tests/page_examples/
 
 #spider log and other txt logs
-log.txt
+*log.txt
 logs/
 scrapes/
 data/

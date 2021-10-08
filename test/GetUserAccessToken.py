@@ -18,18 +18,32 @@ limitations under the License.
 """
 
 import os, sys
+import json
 sys.path.insert(0, os.path.join(os.path.split(__file__)[0], '..'))
 from oauthclient.oauth2api import oauth2api
 import TestUtil
 from oauthclient.credentialutil import credentialutil
 from oauthclient.model.model import environment
 import unittest
+from unittest import skip
+from decouple import config
 
 app_scopes = ["https://api.ebay.com/oauth/api_scope", "https://api.ebay.com/oauth/api_scope/sell.inventory", "https://api.ebay.com/oauth/api_scope/sell.marketing", "https://api.ebay.com/oauth/api_scope/sell.account", "https://api.ebay.com/oauth/api_scope/sell.fulfillment"]
 
 class TestGetApplicationCredential(unittest.TestCase):
+
+    @skip
+    def test_load_credentials_exp(self):
+        """credentialutil.py lod()"""
+        app_config_path = config('EBAY_USER_CREDENTIALS')
+        with open(app_config_path, 'r') as f:
+            if app_config_path.endswith('.json'):
+                content = json.loads(f.read())
+                print(content)
+
     def test_generate_authorization_url(self):
-        app_config_path = os.path.join(os.path.split(__file__)[0], 'config', 'ebay-config-sample-user.yaml')
+        # app_config_path = os.path.join(os.path.split(__file__)[0], 'config', 'ebay-config-sample-user.yaml')
+        app_config_path = config('EBAY_USER_CREDENTIALS')
         credentialutil.load(app_config_path)
         oauth2api_inst = oauth2api()
         signin_url = oauth2api_inst.generate_user_authorization_url(environment.SANDBOX, app_scopes)
