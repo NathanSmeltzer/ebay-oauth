@@ -1,21 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-Copyright 2019 eBay Inc.
- 
-Licensed under the Apache License, Version 2.0 (the "License");
-You may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-    http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-See the License for the specific language governing permissions and
-limitations under the License.
-
-"""
+"""As of 2021, the sandbox signin url does not work via selenium. Production must be used"""
 
 import os, sys
 import json
@@ -50,7 +35,7 @@ class TestGetApplicationCredential(unittest.TestCase):
         self.assertIsNotNone(signin_url)
         print('\n *** test_get_signin_url ***: \n', signin_url)
 
-    # todo: fix
+    @skip    # todo: change to production instead of sandbox if wanting this to work
     def test_exchange_authorization_code(self):
         # app_config_path = os.path.join(os.path.split(__file__)[0], 'config', 'ebay-config-sample-user.yaml')
         app_config_path = config('EBAY_CREDENTIALS')
@@ -64,8 +49,9 @@ class TestGetApplicationCredential(unittest.TestCase):
         self.assertTrue(len(user_token.access_token) > 0)
         print('\n *** test_get_user_access_token ***:\n', user_token)
 
+    @skip# todo: change to production instead of sandbox if wanting this to work
     def test_exchange_refresh_for_access_token(self):
-        app_config_path = os.path.join(os.path.split(__file__)[0], 'config', 'ebay-config-sample-user.yaml')
+        app_config_path = config('EBAY_CREDENTIALS')
         credentialutil.load(app_config_path)
         oauth2api_inst = oauth2api()
         signin_url = oauth2api_inst.generate_user_authorization_url(environment.SANDBOX, app_scopes)

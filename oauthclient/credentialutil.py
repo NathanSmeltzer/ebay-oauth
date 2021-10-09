@@ -63,6 +63,7 @@ class credentialutil(object):
         env_config_id: environment.PRODUCTION.config_id or environment.SANDBOX.config_id
         """
         logger.info(f"env_type in get_credentials: {env_type}")
+        logger.info(f"env_type __dict__: {env_type.__dict__}")
         if len(cls._credential_list) == 0:
             msg = "No environment loaded from configuration file"
             logging.error(msg)
