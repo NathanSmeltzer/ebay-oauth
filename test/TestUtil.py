@@ -16,10 +16,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 """
-import os, logging, json, time, urllib, re, yaml
+import json
+import logging
+import re
+import time
+import urllib
+import yaml
+
+from decouple import config, UndefinedValueError
+from loguru import logger
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from decouple import config, UndefinedValueError
 from webdriver_manager.chrome import ChromeDriverManager
 
 sandbox_key = "sandbox-user"
@@ -86,6 +93,7 @@ def get_authorization_code(signin_url):
     time.sleep(5)
     
     url = browser.current_url
+    logger.info(f"url after submit {url}")
     browser.quit()
 
     if 'code=' in url:
@@ -95,5 +103,6 @@ def get_authorization_code(signin_url):
         logging.error("Unable to obtain code via sign in URL")
     
     decoded_code = urllib.parse.unquote(code).decode('utf8')
+    logger.info(f"decoded_code: {decoded_code}")
     return decoded_code
     

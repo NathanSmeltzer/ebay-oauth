@@ -1,21 +1,30 @@
 from unittest import TestCase
 from unittest import skip
-
+from oauthclient.oauth2api import oauth2api
 from decouple import config
 from loguru import logger
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+from oauthclient.credentialutil import credentialutil
+from oauthclient.model.model import environment
 
 from .driver import get_chrome_driver
 
 WAIT = 5
 
-@skip
+# @skip
 class TestUtilTesting(TestCase):
     # todo: complete
+
+    app_scopes = ["https://api.ebay.com/oauth/api_scope", "https://api.ebay.com/oauth/api_scope/sell.inventory",
+                  "https://api.ebay.com/oauth/api_scope/sell.marketing",
+                  "https://api.ebay.com/oauth/api_scope/sell.account",
+                  "https://api.ebay.com/oauth/api_scope/sell.fulfillment"]
+
     def setUp(self) -> None:
         self.driver = get_chrome_driver()
+
 
     def test_signin_exp(self):
         self.driver.get(config('PRODUCTION_AUTH_URL'))
@@ -28,3 +37,19 @@ class TestUtilTesting(TestCase):
         logger.info("form_userid found")
         form_userid.send_keys("test")
         # form_userid = browser.find_element_by_id('userid')
+
+    def test_get_authorization_code(self, ):
+        pass
+
+class CredentialUtil(TestCase):
+
+    def test_generate_user_authorization_url(self):
+        app_scopes = ["https://api.ebay.com/oauth/api_scope", "https://api.ebay.com/oauth/api_scope/sell.inventory",
+                      "https://api.ebay.com/oauth/api_scope/sell.marketing",
+                      "https://api.ebay.com/oauth/api_scope/sell.account",
+                      "https://api.ebay.com/oauth/api_scope/sell.fulfillment"]
+        app_config_path = config('EBAY_CREDENTIALS')
+        credentialutil.load(app_config_path)
+        oauth2api_inst = oauth2api()
+        signin_url = oauth2api_inst.generate_user_authorization_url(environment.SANDBOX, app_scopes)
+        print(signin_url)
