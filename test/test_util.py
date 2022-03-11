@@ -13,18 +13,21 @@ from .driver import get_chrome_driver
 
 WAIT = 5
 
+app_scopes = [
+    # "https://api.ebay.com/oauth/api_scope",
+    "https://api.ebay.com/oauth/api_scope/sell.inventory",
+    # "https://api.ebay.com/oauth/api_scope/sell.marketing",
+    # "https://api.ebay.com/oauth/api_scope/sell.account",
+    "https://api.ebay.com/oauth/api_scope/sell.fulfillment"
+]
+
+
 # @skip
 class TestUtilTesting(TestCase):
     # todo: complete
 
-    app_scopes = ["https://api.ebay.com/oauth/api_scope", "https://api.ebay.com/oauth/api_scope/sell.inventory",
-                  "https://api.ebay.com/oauth/api_scope/sell.marketing",
-                  "https://api.ebay.com/oauth/api_scope/sell.account",
-                  "https://api.ebay.com/oauth/api_scope/sell.fulfillment"]
-
     def setUp(self) -> None:
         self.driver = get_chrome_driver()
-
 
     def test_signin_exp(self):
         self.driver.get(config('PRODUCTION_AUTH_URL'))
@@ -41,15 +44,20 @@ class TestUtilTesting(TestCase):
     def test_get_authorization_code(self, ):
         pass
 
+
 class CredentialUtil(TestCase):
 
     def test_generate_user_authorization_url(self):
-        app_scopes = ["https://api.ebay.com/oauth/api_scope", "https://api.ebay.com/oauth/api_scope/sell.inventory",
-                      "https://api.ebay.com/oauth/api_scope/sell.marketing",
-                      "https://api.ebay.com/oauth/api_scope/sell.account",
-                      "https://api.ebay.com/oauth/api_scope/sell.fulfillment"]
         app_config_path = config('EBAY_CREDENTIALS')
         credentialutil.load(app_config_path)
         oauth2api_inst = oauth2api()
         signin_url = oauth2api_inst.generate_user_authorization_url(environment.SANDBOX, app_scopes)
-        print(signin_url)
+        print(f"signin_url: {signin_url}")
+
+
+class GetToken(TestCase):
+    def test_get_app_token(self):
+        """guide: https://tech.ebayinc.com/engineering/ebay-oauth-client-library-in-python-and-best-practices/"""
+
+    oauth2api_inst = oauth2api()
+    app_token = oauth2api_inst.get_application_token(environment.PRODUCTION, app_scopes)

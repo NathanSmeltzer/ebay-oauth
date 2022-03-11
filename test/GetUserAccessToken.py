@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-"""As of 2021, the sandbox signin url does not work via selenium. Production must be used"""
+"""As of 2021, the sandbox signin url does not work via selenium. Production must be used
+ebay's guide for this repo:
+https://tech.ebayinc.com/engineering/ebay-oauth-client-library-in-python-and-best-practices/"""
 
 import os, sys
 import json
