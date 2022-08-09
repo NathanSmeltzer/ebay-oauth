@@ -37,23 +37,23 @@ class TestGetApplicationCredential(unittest.TestCase):
         self.assertIsNotNone(signin_url)
         print('\n *** test_get_signin_url ***: \n', signin_url)
 
-    # @skip    # todo: change to production instead of sandbox if wanting this to work - reskip after working
+    @skip # reskip after done in case tests are automatically run
     def test_exchange_authorization_code(self):
-        # app_config_path = os.path.join(os.path.split(__file__)[0], 'config', 'ebay-config-sample-user.yaml')
+        """
+        Use this for getting our business store user code for djproducts
+        only works for production (not sandbox)"""
         app_config_path = config('EBAY_CREDENTIALS')
         credentialutil.load(app_config_path)
         oauth2api_inst = oauth2api()
-        # signin_url = oauth2api_inst.generate_user_authorization_url(environment.SANDBOX, app_scopes)
         signin_url = oauth2api_inst.generate_user_authorization_url(environment.PRODUCTION, app_scopes)
         print(f"signin_url: {signin_url}")
         code = TestUtil.get_authorization_code(signin_url)
-        # user_token = oauth2api_inst.exchange_code_for_access_token(environment.SANDBOX, code)
         user_token = oauth2api_inst.exchange_code_for_access_token(environment.PRODUCTION, code)
         self.assertIsNotNone(user_token.access_token)
         self.assertTrue(len(user_token.access_token) > 0)
         print('\n *** test_get_user_access_token ***:\n', user_token)
 
-    @skip# todo: change to production instead of sandbox if wanting this to work
+    @skip  # change to production instead of sandbox for this to work
     def test_exchange_refresh_for_access_token(self):
         app_config_path = config('EBAY_CREDENTIALS')
         credentialutil.load(app_config_path)

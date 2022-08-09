@@ -66,7 +66,20 @@ def read_user_info(conf=None):
                 _user_credential_list.update({key: [userid, password]})
 
 
-# todo:refactory/DRY
+def click_recaptcha_checkboxes(driver):
+    logger.debug("inside click_recaptcha_checkboxes")
+    time.sleep(1)  # needed
+    checkbox_iframes = driver.find_elements(By.CSS_SELECTOR,
+                                            "iframe[title='widget containing checkbox for hCaptcha security challenge']")
+    logger.debug(f"checkbox_iframes: {checkbox_iframes}")
+    if checkbox_iframes:
+        logger.info("switching to recaptcha iframe")
+        driver.switch_to.frame(checkbox_iframes[0])
+        checkbox_elem = WebDriverWait(driver, SHORT_WAIT).until(
+            EC.presence_of_element_located((By.ID, "checkbox")))
+        checkbox_elem.click()
+
+
 def get_authorization_code(signin_url):
     user_config_path = config('EBAY_USER_CREDENTIALS')
     read_user_info(user_config_path)
@@ -84,21 +97,8 @@ def get_authorization_code(signin_url):
     driver = webdriver.Chrome(ChromeDriverManager().install(),
                               options=chrome_options)
     driver.get(signin_url)
-    # todo: check if recaptcha checkbox iframe
-    checkbox_iframes = driver.find_elements(By.CSS_SELECTOR,
-                                            "iframe[title='widget containing checkbox for hCaptcha security challenge']")
-    if checkbox_iframes:
-        logger.info("switching to recaptcha iframe")
-        driver.switch_to.frame(checkbox_iframes[0])
-        checkbox_elem = WebDriverWait(driver, SHORT_WAIT).until(
-            EC.presence_of_element_located((By.ID, "checkbox")))
-        checkbox_elem.click()
+    click_recaptcha_checkboxes(driver)
 
-    # todo: remove
-    # time.sleep(3000)
-    time.sleep(5)
-
-    # form_userid = driver.find_element_by_id('userid')
     form_userid = WebDriverWait(driver, LONG_WAIT).until(
         EC.presence_of_element_located((By.ID, "userid")))
 
@@ -106,36 +106,18 @@ def get_authorization_code(signin_url):
     form_userid.send_keys(userid)
     logger.info("submitting userid")
     driver.find_element(By.ID, "sgnBt").submit()
-    error_messages = driver.find_elements(By.ID, "errormsg")
-    if error_messages:
-        logger.info("error message found")
-    logger.info("sleeping")
-    time.sleep(2)  # todo: needed?
 
-    checkbox_iframes = driver.find_elements(By.CSS_SELECTOR,
-                                            "iframe[title='widget containing checkbox for hCaptcha security challenge']")
-    if checkbox_iframes:
-        logger.info("switching to recaptcha iframe")
-        driver.switch_to.frame(checkbox_iframes[0])
-        checkbox_elem = WebDriverWait(driver, SHORT_WAIT).until(
-            EC.presence_of_element_located((By.ID, "checkbox")))
-        checkbox_elem.click()
+    click_recaptcha_checkboxes(driver)
 
     url = driver.current_url
     logger.info(f"url after submitting userid {url}")
     logger.info("getting password element")
-    # todo: remove
-    # time.sleep(3000)
     form_pw = WebDriverWait(driver, LONG_WAIT).until(
         EC.presence_of_element_located((By.ID, "pass")))
-    # form_pw = driver.find_element(By.ID,'pass')
     logger.debug(f"password element: {form_pw}")
-    # todo: remove
-    # logger.debug(f"password is: {password}")
     logger.info("submitting password")
     form_pw.send_keys(password)
     driver.find_element(By.ID, "sgnBt").submit()
-    time.sleep(1) # todo: needed?
     # code may display after password submission before clicking accept
     url = driver.current_url
     if 'code=' in url:
@@ -145,16 +127,10 @@ def get_authorization_code(signin_url):
         logger.info(f"Code Obtained: {code}")
 
     else:
-        error_messages = driver.find_elements(By.ID, "errormsg")
-        if error_messages:
-            logger.info("error message found")
-        # todo: remove
-        # time.sleep(3000)
         logger.info("finding final_submit")
         final_submit = WebDriverWait(driver, SHORT_WAIT).until(
-                EC.presence_of_element_located((By.ID, "submit")))
+            EC.presence_of_element_located((By.ID, "submit")))
         final_submit.click()
-        time.sleep(1) # todo: needed?
         url = driver.current_url
         logger.debug(f"url: {url}")
         if 'code=' in url:
