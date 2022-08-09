@@ -37,7 +37,7 @@ class TestGetApplicationCredential(unittest.TestCase):
         self.assertIsNotNone(signin_url)
         print('\n *** test_get_signin_url ***: \n', signin_url)
 
-    # @skip    # todo: change to production instead of sandbox if wanting this to work
+    # @skip    # todo: change to production instead of sandbox if wanting this to work - reskip after working
     def test_exchange_authorization_code(self):
         # app_config_path = os.path.join(os.path.split(__file__)[0], 'config', 'ebay-config-sample-user.yaml')
         app_config_path = config('EBAY_CREDENTIALS')

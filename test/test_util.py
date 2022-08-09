@@ -1,5 +1,6 @@
 from unittest import TestCase
 import re
+import urllib
 from unittest import skip
 from oauthclient.oauth2api import oauth2api
 from decouple import config
@@ -42,13 +43,18 @@ class TestUtilTesting(TestCase):
         form_userid.send_keys("test")
         # form_userid = browser.find_element_by_id('userid')
 
+    # todo: remove or finish
     def test_get_authorization_code(self, ):
         pass
 
+    # todo: remove
     def test_regex_auth_code_url(self):
         url = "https://signin.ebay.com/ws/eBayISAPI.dll?ThirdPartyAuthSucessFailure&isAuthSuccessful=true&code=v%5E1.1%23i%5E1%23f%5E0%23I%5E3%23p%5E3%23r%5E1%23t%5EUl41XzExOjNFRjRDRjBGMzlDMTdFQzQ3MThDMjlGNTRGMjI1OEVEXzJfMSNFXjI2MA%3D%3D&expires_in=299"
         code = re.findall('code=(.*?)&', url)[0]
         print(f"code: {code}")
+        decoded_code = urllib.parse.unquote(code)
+        # decoded_code = urllib.parse.unquote(code).decode('utf8')
+        print(f"decoded_code: {decoded_code}")
 
 
 class CredentialUtil(TestCase):
@@ -65,5 +71,5 @@ class GetToken(TestCase):
     def test_get_app_token(self):
         """guide: https://tech.ebayinc.com/engineering/ebay-oauth-client-library-in-python-and-best-practices/"""
 
-    oauth2api_inst = oauth2api()
-    app_token = oauth2api_inst.get_application_token(environment.PRODUCTION, app_scopes)
+        oauth2api_inst = oauth2api()
+        app_token = oauth2api_inst.get_application_token(environment.PRODUCTION, app_scopes)

@@ -66,6 +66,7 @@ def read_user_info(conf=None):
                 _user_credential_list.update({key: [userid, password]})
 
 
+# todo:refactory/DRY
 def get_authorization_code(signin_url):
     user_config_path = config('EBAY_USER_CREDENTIALS')
     read_user_info(user_config_path)
@@ -141,7 +142,7 @@ def get_authorization_code(signin_url):
         logger.info("code found after password submission")
         logger.debug(f"url: {url}")
         code = re.findall('code=(.*?)&', url)[0]
-        logger.info("Code Obtained: %s", code)
+        logger.info(f"Code Obtained: {code}")
 
     else:
         error_messages = driver.find_elements(By.ID, "errormsg")
@@ -158,11 +159,11 @@ def get_authorization_code(signin_url):
         logger.debug(f"url: {url}")
         if 'code=' in url:
             code = re.findall('code=(.*?)&', url)[0]
-            logger.info("Code Obtained: %s", code)
+            logger.info(f"Code Obtained: {code}")
         else:
             logger.error(f"Unable to obtain code via sign in URL: {url}")
-
-    decoded_code = urllib.parse.unquote(code).decode('utf8')
+    # url decode
+    decoded_code = urllib.parse.unquote(code)
     logger.info(f"decoded_code: {decoded_code}")
     driver.quit()
     return decoded_code
