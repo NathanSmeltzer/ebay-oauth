@@ -130,6 +130,7 @@ def get_authorization_code(signin_url):
         logger.info("finding final_submit")
         final_submit = WebDriverWait(driver, SHORT_WAIT).until(
             EC.presence_of_element_located((By.ID, "submit")))
+        logger.debug(f"final_submit: {final_submit}")
         final_submit.click()
         url = driver.current_url
         logger.debug(f"url: {url}")

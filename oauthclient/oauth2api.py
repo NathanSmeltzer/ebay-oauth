@@ -32,7 +32,7 @@ logging.basicConfig(level=logging.DEBUG, filename=LOGFILE, format="%(asctime)s: 
 class oauth2api(object):
     
            
-    def generate_user_authorization_url(self, env_type, scopes, state=None):
+    def generate_user_authorization_url(self, env_type, scopes: list, state=None):
         '''
             env_type = environment.SANDBOX or environment.PRODUCTION
             scopes = list of strings
