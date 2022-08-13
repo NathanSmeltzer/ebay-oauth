@@ -85,7 +85,8 @@ class oauth2api(object):
     
 
     def exchange_code_for_access_token(self, env_type, code):       
-        logging.info("Trying to get a new user access token ... ")  
+        logging.info("Trying to get a new user access token ... ")
+        logging.debug(f"env_type: {env_type} of type {type(env_type)}")
         credential = credentialutil.get_credentials(env_type)   
     
         headers = util._generate_request_headers(credential)

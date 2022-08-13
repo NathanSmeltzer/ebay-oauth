@@ -30,10 +30,13 @@ class TestGetApplicationCredential(unittest.TestCase):
 
     def test_generate_authorization_url(self):
         # app_config_path = os.path.join(os.path.split(__file__)[0], 'config', 'ebay-config-sample-user.yaml')
+        app_scopes = [
+            "https://api.ebay.com/oauth/api_scope/sell.fulfillment"
+        ]
         app_config_path = config('EBAY_CREDENTIALS')
         credentialutil.load(app_config_path)
         oauth2api_inst = oauth2api()
-        signin_url = oauth2api_inst.generate_user_authorization_url(environment.SANDBOX, app_scopes)
+        signin_url = oauth2api_inst.generate_user_authorization_url(environment.PRODUCTION, app_scopes)
         self.assertIsNotNone(signin_url)
         print('\n *** test_get_signin_url ***: \n', signin_url)
 
