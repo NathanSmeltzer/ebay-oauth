@@ -6,7 +6,7 @@ with open("README.adoc", "r") as fh:
 setuptools.setup(
     name="ebay-oauth",
     packages=setuptools.find_packages(),
-    version="0.0.1",
+    version="0.0.2",
     description="eBay Oauth Client",
     long_description=long_description,
     author="Market Math LLC",
