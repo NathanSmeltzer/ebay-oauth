@@ -40,7 +40,7 @@ class TestGetApplicationCredential(unittest.TestCase):
         self.assertIsNotNone(signin_url)
         print('\n *** test_get_signin_url ***: \n', signin_url)
 
-    @skip # reskip after done in case tests are automatically run
+    # @skip # reskip after done in case tests are automatically run
     def test_exchange_authorization_code(self):
         """
         Use this for getting our business store user code for djproducts
@@ -48,7 +48,8 @@ class TestGetApplicationCredential(unittest.TestCase):
         app_config_path = config('EBAY_CREDENTIALS')
         credentialutil.load(app_config_path)
         oauth2api_inst = oauth2api()
-        signin_url = oauth2api_inst.generate_user_authorization_url(environment.PRODUCTION, app_scopes)
+        signin_url = oauth2api_inst.generate_user_authorization_url(
+            environment.PRODUCTION, app_scopes, state="testval")
         print(f"signin_url: {signin_url}")
         code = TestUtil.get_authorization_code(signin_url)
         user_token = oauth2api_inst.exchange_code_for_access_token(environment.PRODUCTION, code)
