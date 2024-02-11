@@ -4,6 +4,7 @@ import random
 from decouple import UndefinedValueError, config
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 try:  # instead of manually resetting headless value for testing issues. Getting from normal env file
@@ -52,6 +53,6 @@ def get_chrome_driver(headless=headless_setting):
     # doesn't allow for headful
     # chrome_options.add_argument('--remote-debugging-port=9222')
 
-    driver = webdriver.Chrome(ChromeDriverManager().install(),
-                              options=chrome_options)
+    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=chrome_options)
     return driver

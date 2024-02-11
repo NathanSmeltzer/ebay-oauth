@@ -1,6 +1,6 @@
-selenium==3.141.0
-requests==2.21.0
-PyYAML==5.1
-webdriver-manager
+selenium
+requests
+PyYAML
+webdriver-manager==4.0.0
 python-decouple
 loguru

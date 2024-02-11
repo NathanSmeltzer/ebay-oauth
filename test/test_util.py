@@ -2,6 +2,8 @@ from unittest import TestCase
 import re
 import urllib
 from unittest import skip
+from urllib.parse import urlparse
+
 from oauthclient.oauth2api import oauth2api
 from decouple import config
 from loguru import logger
@@ -46,6 +48,21 @@ class TestUtilTesting(TestCase):
     # todo: remove or finish
     def test_get_authorization_code(self, ):
         pass
+
+    # todo: remove/skip
+    def test_url_params(self):
+        url = 'https://app.shipaware.com/accounts/login/?next=/users/ebay-auth/%3Fstate%3Dtestval%26code%3Dv%255E1.1%2523i%255E1%2523I%255E3%2523r%255E1%2523f%255E0%2523p%255E3%2523t%255EUl41XzM6RTIyRkEwM0I4QTE2Q0ZENkUwMUEyOTRDQjQ0MThDRTlfMV8xI0VeMjYw%26expires_in%3D299'
+        parsed_url = urlparse(url)
+        query_string = parsed_url.query
+        print(query_string)
+        query_params = urllib.parse.parse_qs(query_string)
+        print(query_params)
+        next_param = query_params.get('next', None)[0]
+        print(next_param)
+        next_params = urllib.parse.parse_qs(urllib.parse.urlparse(next_param).query)
+        print(next_params)
+        code = next_params.get('code', None)
+        print(code)
 
     # todo: remove
     def test_regex_auth_code_url(self):

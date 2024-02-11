@@ -20,6 +20,8 @@ import json
 import re
 import time
 import urllib
+from urllib.parse import urlparse
+
 import yaml
 
 from decouple import config, UndefinedValueError
@@ -29,6 +31,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 WAIT = 6
@@ -75,13 +78,14 @@ def click_recaptcha_checkboxes(driver):
     if checkbox_iframes:
         logger.info("switching to recaptcha iframe")
         driver.switch_to.frame(checkbox_iframes[0])
-        checkbox_elem = WebDriverWait(driver, SHORT_WAIT).until(
+        checkbox_elem = WebDriverWait(driver, LONG_WAIT).until(
             EC.presence_of_element_located((By.ID, "checkbox")))
         checkbox_elem.click()
 
 
 def get_authorization_code(signin_url):
     user_config_path = config('EBAY_USER_CREDENTIALS')
+    logger.debug(f"user_config_path: {user_config_path}")
     read_user_info(user_config_path)
 
     env_key = production_key
@@ -94,8 +98,8 @@ def get_authorization_code(signin_url):
     chrome_options = Options()
     if headless_setting:
         chrome_options.add_argument('--headless')
-    driver = webdriver.Chrome(ChromeDriverManager().install(),
-                              options=chrome_options)
+    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=chrome_options)
     driver.get(signin_url)
     click_recaptcha_checkboxes(driver)
 
@@ -128,17 +132,28 @@ def get_authorization_code(signin_url):
 
     else:
         logger.info("finding final_submit")
-        final_submit = WebDriverWait(driver, SHORT_WAIT).until(
+        final_submit = WebDriverWait(driver, LONG_WAIT).until(
             EC.presence_of_element_located((By.ID, "submit")))
         logger.debug(f"final_submit: {final_submit}")
         final_submit.click()
         url = driver.current_url
-        logger.debug(f"url: {url}")
-        if 'code=' in url:
-            code = re.findall('code=(.*?)&', url)[0]
+        logger.debug(f"url before parsing: {url}")
+        # get the code query parameter from the url
+        parsed_url = urlparse(url)
+        query_string = parsed_url.query
+        query_params = urllib.parse.parse_qs(query_string)
+        # todo: finish/fix
+        next_param = query_params.get('next', None)[0]
+        code = None
+        if next:
+            next_params = urllib.parse.parse_qs(urllib.parse.urlparse(next_param).query)
+            code = next_params.get('code', None)
+        # todo: sleep here an how to get code
+        if code:
             logger.info(f"Code Obtained: {code}")
         else:
             logger.error(f"Unable to obtain code via sign in URL: {url}")
+            return
     # url decode
     decoded_code = urllib.parse.unquote(code)
     logger.info(f"decoded_code: {decoded_code}")
