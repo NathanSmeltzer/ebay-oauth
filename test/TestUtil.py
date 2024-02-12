@@ -23,16 +23,13 @@ import urllib
 from urllib.parse import urlparse
 
 import yaml
-
 from decouple import config, UndefinedValueError
 from loguru import logger
-from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+
+from test.driver import get_chrome_driver
 
 WAIT = 6
 LONG_WAIT = 40
@@ -84,6 +81,7 @@ def click_recaptcha_checkboxes(driver):
 
 
 def get_authorization_code(signin_url):
+    """NOTE: No longer works as of 2/2024"""
     user_config_path = config('EBAY_USER_CREDENTIALS')
     logger.debug(f"user_config_path: {user_config_path}")
     read_user_info(user_config_path)
@@ -94,25 +92,18 @@ def get_authorization_code(signin_url):
 
     userid = _user_credential_list[env_key][0]
     password = _user_credential_list[env_key][1]
-
-    chrome_options = Options()
-    if headless_setting:
-        chrome_options.add_argument('--headless')
-    service = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=service, options=chrome_options)
+    driver = get_chrome_driver(headless = headless_setting)
     driver.get(signin_url)
     click_recaptcha_checkboxes(driver)
+
 
     form_userid = WebDriverWait(driver, LONG_WAIT).until(
         EC.presence_of_element_located((By.ID, "userid")))
 
-    logger.info("inputting userid")
+    logger.info(f"inputting userid into {form_userid}")
     form_userid.send_keys(userid)
     logger.info("submitting userid")
-    driver.find_element(By.ID, "sgnBt").submit()
-
-    click_recaptcha_checkboxes(driver)
-
+    driver.find_element(By.ID, "signin-continue-btn").submit()
     url = driver.current_url
     logger.info(f"url after submitting userid {url}")
     logger.info("getting password element")
@@ -142,19 +133,17 @@ def get_authorization_code(signin_url):
         parsed_url = urlparse(url)
         query_string = parsed_url.query
         query_params = urllib.parse.parse_qs(query_string)
-        # todo: finish/fix
         next_param = query_params.get('next', None)[0]
         code = None
         if next:
             next_params = urllib.parse.parse_qs(urllib.parse.urlparse(next_param).query)
             code = next_params.get('code', None)
-        # todo: sleep here an how to get code
         if code:
             logger.info(f"Code Obtained: {code}")
         else:
             logger.error(f"Unable to obtain code via sign in URL: {url}")
             return
-    # url decode
+    # url decode (unsure if still needed since using urllib.parse.parse_qs) earlier
     decoded_code = urllib.parse.unquote(code)
     logger.info(f"decoded_code: {decoded_code}")
     driver.quit()
