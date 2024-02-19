@@ -17,7 +17,7 @@ limitations under the License.
 """
 import yaml, json
 import logging
-from .model.model import environment, credentials
+from .model.model import Environment, Credentials
 from loguru import logger
 
 user_config_ids = ["sandbox-user", "production-user"]
@@ -47,13 +47,13 @@ class credentialutil(object):
         for key in content:
             logging.debug("Environment attempted: %s", key)
             
-            if key in [environment.PRODUCTION.config_id, environment.SANDBOX.config_id]:       
+            if key in [Environment.PRODUCTION.config_id, Environment.SANDBOX.config_id]:
                 client_id = content[key]['appid']
                 dev_id = content[key]['devid']
                 client_secret = content[key]['certid']
                 ru_name = content[key]['redirecturi']
 
-                app_info = credentials(client_id, client_secret, dev_id, ru_name)
+                app_info = Credentials(client_id, client_secret, dev_id, ru_name)
                 cls._credential_list.update({key: app_info})
 
             

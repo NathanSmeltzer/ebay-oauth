@@ -7,7 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 from oauthclient.credentialutil import credentialutil
-from oauthclient.model.model import environment
+from oauthclient.model.model import Environment
 from oauthclient.oauth2api import Oauth2api
 from .driver import get_chrome_driver
 
@@ -48,7 +48,7 @@ class CredentialUtil(TestCase):
         app_config_path = config('EBAY_CREDENTIALS')
         credentialutil.load(app_config_path)
         oauth2api_inst = Oauth2api()
-        signin_url = oauth2api_inst.generate_user_authorization_url(environment.SANDBOX, app_scopes)
+        signin_url = oauth2api_inst.generate_user_authorization_url(Environment.SANDBOX, app_scopes)
         print(f"signin_url: {signin_url}")
 
 
@@ -57,4 +57,4 @@ class GetToken(TestCase):
         """guide: https://tech.ebayinc.com/engineering/ebay-oauth-client-library-in-python-and-best-practices/"""
 
         oauth2api_inst = Oauth2api()
-        app_token = oauth2api_inst.get_application_token(environment.PRODUCTION, app_scopes)
+        app_token = oauth2api_inst.get_application_token(Environment.PRODUCTION, app_scopes)

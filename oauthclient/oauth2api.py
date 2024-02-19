@@ -23,7 +23,7 @@ import logging
 from datetime import datetime, timedelta
 from .credentialutil import credentialutil
 from .model import util
-from .model.model import oAuth_token
+from .model.model import OathToken
 
 LOGFILE = 'eBay_Oauth_log.txt'
 logging.basicConfig(level=logging.DEBUG, filename=LOGFILE,
@@ -31,6 +31,8 @@ logging.basicConfig(level=logging.DEBUG, filename=LOGFILE,
 
 
 class Oauth2api(object):
+    # todo: change credentials to class instance
+    # credentials =
 
     def generate_user_authorization_url(self, env_type, scopes: list, state=None):
         '''
@@ -68,7 +70,7 @@ class Oauth2api(object):
 
         resp = requests.post(env_type.api_endpoint, data=body, headers=headers)
         content = json.loads(resp.content)
-        token = oAuth_token()
+        token = OathToken()
 
         if resp.status_code == requests.codes.ok:
             token.access_token = content['access_token']
@@ -93,7 +95,7 @@ class Oauth2api(object):
         resp = requests.post(env_type.api_endpoint, data=body, headers=headers)
 
         content = json.loads(resp.content)
-        token = oAuth_token()
+        token = OathToken()
 
         if resp.status_code == requests.codes.ok:
             token.access_token = content['access_token']
@@ -122,7 +124,7 @@ class Oauth2api(object):
         body = util._generate_refresh_request_body(' '.join(scopes), refresh_token)
         resp = requests.post(env_type.api_endpoint, data=body, headers=headers)
         content = json.loads(resp.content)
-        token = oAuth_token()
+        token = OathToken()
         token.token_response = content
 
         if resp.status_code == requests.codes.ok:

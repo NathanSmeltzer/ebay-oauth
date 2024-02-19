@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.join(os.path.split(__file__)[0], '..'))
 from oauthclient.oauth2api import Oauth2api
 import TestUtil
 from oauthclient.credentialutil import credentialutil
-from oauthclient.model.model import environment
+from oauthclient.model.model import Environment
 import unittest
 from unittest import skip
 from decouple import config
@@ -44,7 +44,7 @@ class TestGetApplicationCredential(unittest.TestCase):
         app_config_path = config('EBAY_CREDENTIALS')
         credentialutil.load(app_config_path)
         oauth2api_inst = Oauth2api()
-        signin_url = oauth2api_inst.generate_user_authorization_url(environment.PRODUCTION, app_scopes)
+        signin_url = oauth2api_inst.generate_user_authorization_url(Environment.PRODUCTION, app_scopes)
         self.assertIsNotNone(signin_url)
         print('\n *** test_get_signin_url ***: \n', signin_url)
 
@@ -57,10 +57,10 @@ class TestGetApplicationCredential(unittest.TestCase):
         credentialutil.load(app_config_path)
         oauth2api_inst = Oauth2api()
         signin_url = oauth2api_inst.generate_user_authorization_url(
-            environment.PRODUCTION, app_scopes, state="testval")
+            Environment.PRODUCTION, app_scopes, state="testval")
         print(f"signin_url: {signin_url}")
         code = TestUtil.get_authorization_code(signin_url)
-        user_token = oauth2api_inst.exchange_code_for_access_token(environment.PRODUCTION, code)
+        user_token = oauth2api_inst.exchange_code_for_access_token(Environment.PRODUCTION, code)
         self.assertIsNotNone(user_token.access_token)
         self.assertTrue(len(user_token.access_token) > 0)
         print('\n *** test_get_user_access_token ***:\n', user_token)
@@ -70,13 +70,13 @@ class TestGetApplicationCredential(unittest.TestCase):
         app_config_path = config('EBAY_CREDENTIALS')
         credentialutil.load(app_config_path)
         oauth2api_inst = Oauth2api()
-        signin_url = oauth2api_inst.generate_user_authorization_url(environment.SANDBOX, app_scopes)
+        signin_url = oauth2api_inst.generate_user_authorization_url(Environment.SANDBOX, app_scopes)
         code = TestUtil.get_authorization_code(signin_url)
-        user_token = oauth2api_inst.exchange_code_for_access_token(environment.SANDBOX, code)
+        user_token = oauth2api_inst.exchange_code_for_access_token(Environment.SANDBOX, code)
         self.assertIsNotNone(user_token.refresh_token)
         self.assertTrue(len(user_token.refresh_token) > 0)
 
-        user_token = oauth2api_inst.get_access_token(environment.SANDBOX, user_token.refresh_token, app_scopes)
+        user_token = oauth2api_inst.get_access_token(Environment.SANDBOX, user_token.refresh_token, app_scopes)
         self.assertIsNotNone(user_token.access_token)
         self.assertTrue(len(user_token.access_token) > 0)
 
