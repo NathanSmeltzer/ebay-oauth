@@ -20,13 +20,15 @@ class TestOAuth2API(unittest.TestCase):
         self.assertIsNotNone(signin_url)
         print('\n *** test_get_signin_url ***: \n', signin_url)
 
-    def test_get_access_token(self):
+    def test_get_access_token_valid(self):
         refresh_token = config('REFRESH_TOKEN_VALID')
         oauth2api = Oauth2api(environment="production")
         # print(f"environment endpoint: {oauth2api.environment.web_endpoint}")
         token = oauth2api.get_access_token(refresh_token, scopes=self.app_scopes)
         assert token.access_token
 
+    def test_get_access_token_invalid(self):
+        oauth2api = Oauth2api(environment="production")
         #  faulty token
         refresh_token = config('REFRESH_TOKEN_INVALID')
         token = oauth2api.get_access_token(refresh_token, scopes=self.app_scopes)

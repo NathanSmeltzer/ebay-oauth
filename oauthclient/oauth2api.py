@@ -20,6 +20,7 @@ import json
 import logging
 import urllib
 from datetime import datetime, timedelta
+# from loguru import logger
 
 import requests
 from decouple import config
@@ -29,6 +30,7 @@ from .credentialutil import CredentialUtil
 from .model import util
 from .model.model import OathToken
 
+# todo: needed?
 LOGFILE = 'eBay_Oauth_log.txt'
 logging.basicConfig(level=logging.DEBUG, filename=LOGFILE,
                     format="%(asctime)s: %(levelname)s - %(funcName)s: %(message)s", filemode='w')
@@ -98,6 +100,8 @@ class Oauth2api:
         resp = requests.post(self.environment.api_endpoint, data=body, headers=headers)
 
         content = json.loads(resp.content)
+        # todo: remove
+        logging.debug(f"content: \n{content}")
         token = OathToken()
 
         if resp.status_code == requests.codes.ok:
@@ -125,6 +129,7 @@ class Oauth2api:
         body = util._generate_refresh_request_body(' '.join(scopes), refresh_token)
         resp = requests.post(self.environment.api_endpoint, data=body, headers=headers)
         content = json.loads(resp.content)
+
         token = OathToken()
         token.token_response = content
 
