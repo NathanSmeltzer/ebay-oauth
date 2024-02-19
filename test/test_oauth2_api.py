@@ -1,13 +1,10 @@
-import os, sys
-import json
-# todo: needed?
-# sys.path.insert(0, os.path.join(os.path.split(__file__)[0], '..'))
-from oauthclient.oauth2api import Oauth2api
-import TestUtil
-from oauthclient.credentialutil import CredentialUtil
-from oauthclient.model.model import Environment
 import unittest
+
 from decouple import config
+
+from oauthclient.credentialutil import CredentialUtil
+from oauthclient.oauth2api import Oauth2api
+
 
 class TestOAuth2API(unittest.TestCase):
     app_scopes = [
@@ -27,10 +24,7 @@ class TestOAuth2API(unittest.TestCase):
         refresh_token = config('REFRESH_TOKEN_VALID')
         oauth2api = Oauth2api(environment="production")
         # print(f"environment endpoint: {oauth2api.environment.web_endpoint}")
-
-
         token = oauth2api.get_access_token(refresh_token, scopes=self.app_scopes)
-
         assert token.access_token
 
         #  faulty token

@@ -15,13 +15,11 @@ except UndefinedValueError:
     headless_setting = True
 
 
-def get_chrome_driver(headless=headless_setting):
+def get_chrome_driver(headless=headless_setting) -> webdriver.Chrome:
     """
     Creates selenium.webdriver.chrome driver instance
     :param headless: Flag if wanting to run in headless mode
     :type headless: Bool
-    :return: chrome driver instance
-    :rtype: selenium.webdriver.chrome
     :testing: test_order.GetDriver
     """
     chrome_options = Options()

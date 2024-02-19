@@ -33,20 +33,19 @@ LOGFILE = 'eBay_Oauth_log.txt'
 logging.basicConfig(level=logging.DEBUG, filename=LOGFILE,
                     format="%(asctime)s: %(levelname)s - %(funcName)s: %(message)s", filemode='w')
 
+default_scopes = [
+              "https://api.ebay.com/oauth/api_scope/sell.inventory",
+              "https://api.ebay.com/oauth/api_scope/sell.fulfillment"
+              ]
 
-class Oauth2api():
-    
+class Oauth2api:
+
     def __init__(self, environment: str = "production", credential_config_path: str = config("EBAY_CREDENTIALS")):
         self.environment = Environment.PRODUCTION if environment == "production" else Environment.SANDBOX
         # load credentials
         CredentialUtil.load(credential_config_path)
         self.credential = CredentialUtil.get_credentials(self.environment)
-
-
-    def generate_user_authorization_url(self, scopes: list, state=None):
-        '''
-            scopes = list of strings
-        '''
+    def generate_user_authorization_url(self, state=None, scopes: list = default_scopes):
 
         scopes = ' '.join(scopes)
         param = {
@@ -63,7 +62,7 @@ class Oauth2api():
         query = urllib.parse.urlencode(param)
         return self.environment.web_endpoint + '?' + query
 
-    def get_application_token(self, scopes):
+    def get_application_token(self, scopes: list = default_scopes):
         """
             makes call for application token and stores result in credential object
             returns credential object
@@ -114,7 +113,7 @@ class Oauth2api():
             logging.error("Error: %s - %s", content['error'], content['error_description'])
         return token
 
-    def get_access_token(self, refresh_token, scopes):
+    def get_access_token(self, refresh_token, scopes=default_scopes):
         """
         refresh token call
         """

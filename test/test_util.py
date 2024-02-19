@@ -25,10 +25,12 @@ from urllib.parse import urlparse
 import yaml
 from decouple import config, UndefinedValueError
 from loguru import logger
+from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
+from oauthclient.oauth2api import Oauth2api
 from test.driver import get_chrome_driver
 
 WAIT = 6
@@ -46,6 +48,12 @@ except UndefinedValueError:
     # logger.warning("defaulting to True for headless_setting")
     headless_setting = True
 
+
+class TestUtil:
+    def __init__(self, oauth2api: Oauth2api = Oauth2api(),
+                 driver: webdriver.Chrome=get_chrome_driver(headless = headless_setting)):
+        self.oauth2api = oauth2api
+        self.driver = driver
 
 def read_user_info(conf=None):
     logger.info("Loading user credential configuration file at: %s", conf)
@@ -82,9 +90,10 @@ def click_recaptcha_checkboxes(driver):
 
 def get_authorization_code(signin_url):
     """NOTE: No longer works as of 2/2024"""
-    user_config_path = config('EBAY_USER_CREDENTIALS')
-    logger.debug(f"user_config_path: {user_config_path}")
-    read_user_info(user_config_path)
+    # todo: needed?
+    # user_config_path = config('EBAY_USER_CREDENTIALS')
+    # logger.debug(f"user_config_path: {user_config_path}")
+    # read_user_info(user_config_path)
 
     env_key = production_key
     if "sandbox" in signin_url:
