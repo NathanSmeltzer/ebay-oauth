@@ -6,9 +6,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-from oauthclient.credentialutil import CredentialUtil
-from oauthclient.model.model import Environment
-from oauthclient.oauth2api import Oauth2api
 from .driver import get_chrome_driver
 
 WAIT = 5
@@ -24,7 +21,7 @@ app_scopes = [
 
 # @skip
 class TestUtilTesting(TestCase):
-    # todo: complete
+    # todo: complete or remove
 
     def setUp(self) -> None:
         self.driver = get_chrome_driver()
@@ -40,22 +37,3 @@ class TestUtilTesting(TestCase):
         logger.info("form_userid found")
         form_userid.send_keys("test")
         # form_userid = browser.find_element_by_id('userid')
-
-
-class CredentialUtil(TestCase):
-
-    # todo: remove if already tested elsewhere - doesn't work here for some reason
-    def test_generate_user_authorization_url(self):
-        app_config_path = config('EBAY_CREDENTIALS')
-        CredentialUtil.load(app_config_path)
-        oauth2api_inst = Oauth2api()
-        signin_url = oauth2api_inst.generate_user_authorization_url(app_scopes)
-        print(f"signin_url: {signin_url}")
-
-
-class GetToken(TestCase):
-    def test_get_app_token(self):
-        """guide: https://tech.ebayinc.com/engineering/ebay-oauth-client-library-in-python-and-best-practices/"""
-
-        oauth2api_inst = Oauth2api()
-        app_token = oauth2api_inst.get_application_token(Environment.PRODUCTION, app_scopes)
