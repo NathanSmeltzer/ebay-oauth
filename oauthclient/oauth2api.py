@@ -17,14 +17,17 @@ limitations under the License.
 """
 
 import json
-import urllib
-import requests
 import logging
+import urllib
 from datetime import datetime, timedelta
+
+import requests
+from decouple import config
+
+from oauthclient.model.model import Environment
 from .credentialutil import CredentialUtil
 from .model import util
 from .model.model import OathToken
-from oauthclient.model.model import Environment
 
 LOGFILE = 'eBay_Oauth_log.txt'
 logging.basicConfig(level=logging.DEBUG, filename=LOGFILE,
@@ -36,8 +39,11 @@ class Oauth2api():
     # todo: change credentials to class instance
     # credentials =
     
-    def __init__(self, environment: str = "production"):
+    def __init__(self, environment: str = "production", credential_config_path: str = config("EBAY_CREDENTIALS")):
         self.environment = Environment.PRODUCTION if environment == "production" else Environment.SANDBOX
+        # load credentials
+        CredentialUtil.load(credential_config_path)
+
 
     def generate_user_authorization_url(self, scopes: list, state=None):
         '''

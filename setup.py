@@ -9,7 +9,7 @@ setuptools.setup(
     version="0.0.2",
     description="eBay Oauth Client",
     long_description=long_description,
-    author="Market Math LLC",
+    author="Logistero Ltd dba ShipAware",
     author_email="nathan.smeltzer@gmail.com",
     url="https://gitlab.com/Smeltzer/ebay-oauth",
     download_url="https://gitlab.com/Smeltzer/ebay-oauth/-/archive/master/selenium-browser-shopper-master.zip",
@@ -18,4 +18,4 @@ setuptools.setup(
         "Operating System :: OS Independent",
         "License :: Other/Proprietary License",
     ],
-    python_requires='>=3.6',)
+    python_requires='>=3.7',)
