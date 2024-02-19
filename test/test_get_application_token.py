@@ -16,11 +16,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 """
-import os, sys
-sys.path.insert(0, os.path.join(os.path.split(__file__)[0], '..'))
 from oauthclient.oauth2api import Oauth2api
-from oauthclient.credentialutil import CredentialUtil
-from oauthclient.model.model import Environment
 import unittest
 
 app_scopes = ["https://api.ebay.com/oauth/api_scope", "https://api.ebay.com/oauth/api_scope"]
@@ -30,8 +26,6 @@ class TestGetApplicationCredential(unittest.TestCase):
 
         
     def test_invalid_oauth_scope(self):
-        config_path = os.path.join(os.path.split(__file__)[0], 'config' ,'ebay-config-sample.yaml')
-        CredentialUtil.load(config_path)
         oauth2api_inst = Oauth2api()
         app_token = oauth2api_inst.get_application_token(invalid_app_scopes)
         self.assertIsNone(app_token.access_token)
@@ -40,25 +34,20 @@ class TestGetApplicationCredential(unittest.TestCase):
     
 
     def test_client_credentials_grant_sandbox(self):
-        config_path = os.path.join(os.path.split(__file__)[0], 'config' ,'ebay-config-sample.yaml')
-        CredentialUtil.load(config_path)
-        oauth2api_inst = Oauth2api()
-        app_token = oauth2api_inst.get_application_token(Environment.SANDBOX, app_scopes)
+        oauth2api = Oauth2api(environment="sandbox")
+        app_token = oauth2api.get_application_token(app_scopes)
         self.assertIsNone(app_token.error)
         self.assertIsNotNone(app_token.access_token)
         self.assertTrue(len(app_token.access_token) > 0)
         print('\n *** test_client_credentials_grant_sandbox ***:\n', app_token)
 
-        
     def test_client_credentials_grant_production(self):
-        config_path = os.path.join(os.path.split(__file__)[0], 'config' ,'ebay-config-sample.yaml')
-        CredentialUtil.load(config_path)
-        oauth2api_inst = Oauth2api()
-        app_token = oauth2api_inst.get_application_token(Environment.PRODUCTION, app_scopes)
+        oauth2api = Oauth2api(environment="production")
+        app_token = oauth2api.get_application_token(app_scopes)
         self.assertIsNone(app_token.error)
         self.assertIsNotNone(app_token.access_token)
         self.assertTrue(len(app_token.access_token) > 0)
-        print('\n *** test_client_credentials_grant_production ***:\n', app_token)
+        # print('\n *** test_client_credentials_grant_production ***:\n', app_token)
 
 
 if __name__ == '__main__':

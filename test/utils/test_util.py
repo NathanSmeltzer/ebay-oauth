@@ -138,6 +138,7 @@ class TestUtil:
     def get_authorization_code(self) -> Optional[str]:
         self.read_user_info()
         url = self.log_in()
-        # logger.debug(f"url in from login: {url}")
-        code = self.get_code_from_url(url)
-        return code if code else None
+        logger.debug(f"url in from login: {url}")
+        if "code" in url:
+            code = self.get_code_from_url(url)
+            return code if code else None

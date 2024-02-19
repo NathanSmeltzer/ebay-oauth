@@ -62,6 +62,7 @@ class Oauth2api:
         query = urllib.parse.urlencode(param)
         return self.environment.web_endpoint + '?' + query
 
+    # todo: ensure works
     def get_application_token(self, scopes: list = default_scopes):
         """
             makes call for application token and stores result in credential object
