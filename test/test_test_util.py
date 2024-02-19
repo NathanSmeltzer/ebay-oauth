@@ -26,6 +26,7 @@ class TestTestUtil(TestCase):
 
     def setUp(self) -> None:
         self.test_util = TestUtil()
+        self.test_util.read_user_info()
 
     def test_read_user_info(self):
         self.test_util.read_user_info()

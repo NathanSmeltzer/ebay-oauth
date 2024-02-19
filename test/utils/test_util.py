@@ -91,11 +91,28 @@ class TestUtil:
             self.password = content[key]['password']
 
     # todo: finish
+    def click_recaptcha_checkboxes(self):
+        """NOTE: You will have to manually intervene sometimes for image selection.
+        After manually selecting the correct images, the automated checkbox clicking works for some time"""
+        logger.debug("inside click_recaptcha_checkboxes")
+        time.sleep(1)  # needed
+        # time.sleep(30000) # todo: remove
+        checkbox_iframes = self.driver.find_elements(By.CSS_SELECTOR,
+                                                "iframe[title='Widget containing checkbox for hCaptcha security challenge']")
+        logger.debug(f"checkbox_iframes: {checkbox_iframes}")
+        if checkbox_iframes:
+            logger.info("switching to recaptcha iframe")
+            self.driver.switch_to.frame(checkbox_iframes[0])
+            checkbox_elem = WebDriverWait(self.driver, LONG_WAIT).until(
+                EC.presence_of_element_located((By.ID, "checkbox")))
+            checkbox_elem.click()
+
+    # todo: finish
     def log_in(self):
         auth_url = self.oauth2api.generate_user_authorization_url()
         logger.debug(f"auth_url: {auth_url}")
         self.driver.get(auth_url)
-
+        self.click_recaptcha_checkboxes()
         form_userid = WebDriverWait(self.driver, LONG_WAIT).until(
             EC.presence_of_element_located((By.ID, "userid")))
 
