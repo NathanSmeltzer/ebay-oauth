@@ -20,6 +20,7 @@ import json
 import re
 import time
 import urllib
+from typing import Optional
 from urllib.parse import urlparse
 
 import yaml
@@ -50,15 +51,15 @@ except UndefinedValueError:
     # logger.warning("defaulting to True for headless_setting")
     headless_setting = True
 
+
 # todo: remove if not using
 # class TestUser:
 
 
-
 class TestUtil:
     def __init__(self, oauth2api: Oauth2api = Oauth2api(),
-                 driver: webdriver.Chrome=get_chrome_driver(headless = headless_setting),
-                 user_config_path: str = config('EBAY_USER_CREDENTIALS', default="ebay_user.json" )):
+                 driver: webdriver.Chrome = get_chrome_driver(headless=headless_setting),
+                 user_config_path: str = config('EBAY_USER_CREDENTIALS', default="ebay_user.json")):
         self.oauth2api = oauth2api
         self.driver = driver
         # get environment from oauth2api
@@ -98,7 +99,7 @@ class TestUtil:
         time.sleep(1)  # needed
         # time.sleep(30000) # todo: remove
         checkbox_iframes = self.driver.find_elements(By.CSS_SELECTOR,
-                                                "iframe[title='Widget containing checkbox for hCaptcha security challenge']")
+                                                     "iframe[title='Widget containing checkbox for hCaptcha security challenge']")
         logger.debug(f"checkbox_iframes: {checkbox_iframes}")
         if checkbox_iframes:
             logger.info("switching to recaptcha iframe")
@@ -126,6 +127,17 @@ class TestUtil:
         logger.info("submitting password")
         form_pw.send_keys(self.password)
         self.driver.find_element(By.ID, "sgnBt").submit()
+
+    def get_code_from_url(self, url) -> [] | str:
+        parsed_url = urlparse(url)
+        query_string = parsed_url.query
+        query_params = urllib.parse.parse_qs(query_string)
+        next_param = query_params.get('next', None)[0]
+        if next_param:
+            next_params = urllib.parse.parse_qs(urllib.parse.urlparse(next_param).query)
+            code = next_params.get('code', [])
+            return code[0]
+
 
 # todo: needed?
 def read_user_info(conf=None):
@@ -174,10 +186,9 @@ def get_authorization_code(signin_url):
 
     userid = _user_credential_list[env_key][0]
     password = _user_credential_list[env_key][1]
-    driver = get_chrome_driver(headless = headless_setting)
+    driver = get_chrome_driver(headless=headless_setting)
     driver.get(signin_url)
     click_recaptcha_checkboxes(driver)
-
 
     form_userid = WebDriverWait(driver, LONG_WAIT).until(
         EC.presence_of_element_located((By.ID, "userid")))
@@ -218,7 +229,7 @@ def get_authorization_code(signin_url):
         query_params = urllib.parse.parse_qs(query_string)
         next_param = query_params.get('next', None)[0]
         code = None
-        if next:
+        if next_param:
             next_params = urllib.parse.parse_qs(urllib.parse.urlparse(next_param).query)
             code = next_params.get('code', None)
         if code:
