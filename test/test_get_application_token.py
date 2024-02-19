@@ -33,7 +33,7 @@ class TestGetApplicationCredential(unittest.TestCase):
         config_path = os.path.join(os.path.split(__file__)[0], 'config' ,'ebay-config-sample.yaml')
         CredentialUtil.load(config_path)
         oauth2api_inst = Oauth2api()
-        app_token = oauth2api_inst.get_application_token(Environment.SANDBOX, invalid_app_scopes)
+        app_token = oauth2api_inst.get_application_token(invalid_app_scopes)
         self.assertIsNone(app_token.access_token)
         self.assertIsNotNone(app_token.error)
         print('\n *** test_invalid_oauth_scope ***\n', app_token)

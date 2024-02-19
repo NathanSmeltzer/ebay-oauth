@@ -24,7 +24,7 @@ app_scopes = [
               "https://api.ebay.com/oauth/api_scope/sell.fulfillment"
               ]
 
-
+# todo: remove if no longer using selenium/tests
 class TestGetApplicationCredential(unittest.TestCase):
 
     @skip
@@ -36,19 +36,7 @@ class TestGetApplicationCredential(unittest.TestCase):
                 content = json.loads(f.read())
                 print(content)
 
-    def test_generate_authorization_url(self):
-        # app_config_path = os.path.join(os.path.split(__file__)[0], 'config', 'ebay-config-sample-user.yaml')
-        app_scopes = [
-            "https://api.ebay.com/oauth/api_scope/sell.fulfillment"
-        ]
-        app_config_path = config('EBAY_CREDENTIALS')
-        CredentialUtil.load(app_config_path)
-        oauth2api_inst = Oauth2api()
-        signin_url = oauth2api_inst.generate_user_authorization_url(Environment.PRODUCTION, app_scopes)
-        self.assertIsNotNone(signin_url)
-        print('\n *** test_get_signin_url ***: \n', signin_url)
-
-    # @skip # reskip after done in case tests are automatically run
+    @skip("Part of TestUtil - no longer works")
     def test_exchange_authorization_code(self):
         """
         Use this for getting our business store user code for djproducts
@@ -56,8 +44,7 @@ class TestGetApplicationCredential(unittest.TestCase):
         app_config_path = config('EBAY_CREDENTIALS')
         CredentialUtil.load(app_config_path)
         oauth2api_inst = Oauth2api()
-        signin_url = oauth2api_inst.generate_user_authorization_url(
-            Environment.PRODUCTION, app_scopes, state="testval")
+        signin_url = oauth2api_inst.generate_user_authorization_url(app_scopes, state="testval")
         print(f"signin_url: {signin_url}")
         code = TestUtil.get_authorization_code(signin_url)
         user_token = oauth2api_inst.exchange_code_for_access_token(Environment.PRODUCTION, code)
@@ -81,15 +68,6 @@ class TestGetApplicationCredential(unittest.TestCase):
         self.assertTrue(len(user_token.access_token) > 0)
 
         print('\n *** test_refresh_user_access_token ***:\n', user_token)
-
-    # todo: finish or combine
-    def test_get_access_token(self):
-        inst = Oauth2api()
-        print(f"inst: {inst} of type {type(inst)}")
-        # token = oauth2api().get_application_token(environment.PRODUCTION, app_scopes)
-        # token = token.access_token
-        # # todo: remove
-        # print('\n *** test_get_application_token ***:\n', token)
 
 
 if __name__ == '__main__':

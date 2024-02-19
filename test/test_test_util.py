@@ -44,11 +44,12 @@ class TestUtilTesting(TestCase):
 
 class CredentialUtil(TestCase):
 
+    # todo: remove if already tested elsewhere - doesn't work here for some reason
     def test_generate_user_authorization_url(self):
         app_config_path = config('EBAY_CREDENTIALS')
         CredentialUtil.load(app_config_path)
         oauth2api_inst = Oauth2api()
-        signin_url = oauth2api_inst.generate_user_authorization_url(Environment.SANDBOX, app_scopes)
+        signin_url = oauth2api_inst.generate_user_authorization_url(app_scopes)
         print(f"signin_url: {signin_url}")
 
 

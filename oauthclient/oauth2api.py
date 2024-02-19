@@ -24,23 +24,27 @@ from datetime import datetime, timedelta
 from .credentialutil import CredentialUtil
 from .model import util
 from .model.model import OathToken
+from oauthclient.model.model import Environment
 
 LOGFILE = 'eBay_Oauth_log.txt'
 logging.basicConfig(level=logging.DEBUG, filename=LOGFILE,
                     format="%(asctime)s: %(levelname)s - %(funcName)s: %(message)s", filemode='w')
 
 
-class Oauth2api(object):
+class Oauth2api():
+    
     # todo: change credentials to class instance
     # credentials =
+    
+    def __init__(self, environment: str = "production"):
+        self.environment = Environment.PRODUCTION if environment == "production" else Environment.SANDBOX
 
-    def generate_user_authorization_url(self, env_type, scopes: list, state=None):
+    def generate_user_authorization_url(self, scopes: list, state=None):
         '''
-            env_type = environment.SANDBOX or environment.PRODUCTION
             scopes = list of strings
         '''
 
-        credential = CredentialUtil.get_credentials(env_type)
+        credential = CredentialUtil.get_credentials(self.environment)
 
         scopes = ' '.join(scopes)
         param = {
@@ -55,20 +59,20 @@ class Oauth2api(object):
             param.update({'state': state})
 
         query = urllib.parse.urlencode(param)
-        return env_type.web_endpoint + '?' + query
+        return self.environment.web_endpoint + '?' + query
 
-    def get_application_token(self, env_type, scopes):
+    def get_application_token(self, scopes):
         """
             makes call for application token and stores result in credential object
             returns credential object
         """
 
         logging.info("Trying to get a new application access token ... ")
-        credential = CredentialUtil.get_credentials(env_type)
+        credential = CredentialUtil.get_credentials(self.environment)
         headers = util._generate_request_headers(credential)
         body = util._generate_application_request_body(credential, ' '.join(scopes))
 
-        resp = requests.post(env_type.api_endpoint, data=body, headers=headers)
+        resp = requests.post(self.environment.api_endpoint, data=body, headers=headers)
         content = json.loads(resp.content)
         token = OathToken()
 
@@ -85,14 +89,14 @@ class Oauth2api(object):
             logging.error("Error: %s - %s", content['error'], content['error_description'])
         return token
 
-    def exchange_code_for_access_token(self, env_type, code):
+    def exchange_code_for_access_token(self, code):
         logging.info("Trying to get a new user access token ... ")
-        logging.debug(f"env_type: {env_type} of type {type(env_type)}")
-        credential = CredentialUtil.get_credentials(env_type)
+        logging.debug(f"self.environment: {self.environment} of type {type(self.environment)}")
+        credential = CredentialUtil.get_credentials(self.environment)
 
         headers = util._generate_request_headers(credential)
         body = util._generate_oauth_request_body(credential, code)
-        resp = requests.post(env_type.api_endpoint, data=body, headers=headers)
+        resp = requests.post(self.environment.api_endpoint, data=body, headers=headers)
 
         content = json.loads(resp.content)
         token = OathToken()
@@ -111,18 +115,18 @@ class Oauth2api(object):
             logging.error("Error: %s - %s", content['error'], content['error_description'])
         return token
 
-    def get_access_token(self, env_type, refresh_token, scopes):
+    def get_access_token(self, refresh_token, scopes):
         """
         refresh token call
         """
 
         logging.info("Trying to get a new user access token ... ")
 
-        credential = CredentialUtil.get_credentials(env_type)
+        credential = CredentialUtil.get_credentials(self.environment)
 
         headers = util._generate_request_headers(credential)
         body = util._generate_refresh_request_body(' '.join(scopes), refresh_token)
-        resp = requests.post(env_type.api_endpoint, data=body, headers=headers)
+        resp = requests.post(self.environment.api_endpoint, data=body, headers=headers)
         content = json.loads(resp.content)
         token = OathToken()
         token.token_response = content
