@@ -30,7 +30,7 @@ logging.basicConfig(level=logging.DEBUG, filename=LOGFILE,
                     format="%(asctime)s: %(levelname)s - %(funcName)s: %(message)s", filemode='w')
 
 
-class oauth2api(object):
+class Oauth2api(object):
 
     def generate_user_authorization_url(self, env_type, scopes: list, state=None):
         '''
