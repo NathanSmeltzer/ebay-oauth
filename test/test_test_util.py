@@ -6,7 +6,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-from .driver import get_chrome_driver
+from test.utils.driver import get_chrome_driver
+from test.utils.test_util import TestUtil
 
 WAIT = 5
 
@@ -20,12 +21,22 @@ app_scopes = [
 
 
 # @skip
-class TestUtilTesting(TestCase):
+class TestTestUtil(TestCase):
     # todo: complete or remove
 
     def setUp(self) -> None:
-        self.driver = get_chrome_driver()
+        self.test_util = TestUtil()
 
+    def test_read_user_info(self):
+        self.test_util.read_user_info()
+        assert self.test_util.userid
+        assert self.test_util.password
+
+    # todo: finish
+    def test_log_in(self):
+        self.test_util.log_in()
+
+    # todo: remove?
     def test_signin_exp(self):
         self.driver.get(config('PRODUCTION_AUTH_URL'))
         # sbx
