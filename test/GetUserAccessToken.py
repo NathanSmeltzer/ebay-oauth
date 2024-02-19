@@ -10,7 +10,7 @@ import json
 sys.path.insert(0, os.path.join(os.path.split(__file__)[0], '..'))
 from oauthclient.oauth2api import Oauth2api
 import TestUtil
-from oauthclient.credentialutil import credentialutil
+from oauthclient.credentialutil import CredentialUtil
 from oauthclient.model.model import Environment
 import unittest
 from unittest import skip
@@ -42,7 +42,7 @@ class TestGetApplicationCredential(unittest.TestCase):
             "https://api.ebay.com/oauth/api_scope/sell.fulfillment"
         ]
         app_config_path = config('EBAY_CREDENTIALS')
-        credentialutil.load(app_config_path)
+        CredentialUtil.load(app_config_path)
         oauth2api_inst = Oauth2api()
         signin_url = oauth2api_inst.generate_user_authorization_url(Environment.PRODUCTION, app_scopes)
         self.assertIsNotNone(signin_url)
@@ -54,7 +54,7 @@ class TestGetApplicationCredential(unittest.TestCase):
         Use this for getting our business store user code for djproducts
         only works for production (not sandbox)"""
         app_config_path = config('EBAY_CREDENTIALS')
-        credentialutil.load(app_config_path)
+        CredentialUtil.load(app_config_path)
         oauth2api_inst = Oauth2api()
         signin_url = oauth2api_inst.generate_user_authorization_url(
             Environment.PRODUCTION, app_scopes, state="testval")
@@ -68,7 +68,7 @@ class TestGetApplicationCredential(unittest.TestCase):
     @skip  # change to production instead of sandbox for this to work
     def test_exchange_refresh_for_access_token(self):
         app_config_path = config('EBAY_CREDENTIALS')
-        credentialutil.load(app_config_path)
+        CredentialUtil.load(app_config_path)
         oauth2api_inst = Oauth2api()
         signin_url = oauth2api_inst.generate_user_authorization_url(Environment.SANDBOX, app_scopes)
         code = TestUtil.get_authorization_code(signin_url)

@@ -22,7 +22,7 @@ from loguru import logger
 
 user_config_ids = ["sandbox-user", "production-user"]
 
-class credentialutil(object):
+class CredentialUtil(object):
     """
     credential_list: dictionary key=string, value=credentials
     """
@@ -40,7 +40,7 @@ class credentialutil(object):
                 content = json.loads(f.read())
             else:
                 raise ValueError('Configuration file need to be in JSON or YAML')
-            credentialutil._iterate(content)
+            CredentialUtil._iterate(content)
 
     @classmethod
     def _iterate(cls, content):

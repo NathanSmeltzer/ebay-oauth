@@ -21,7 +21,7 @@ import urllib
 import requests
 import logging
 from datetime import datetime, timedelta
-from .credentialutil import credentialutil
+from .credentialutil import CredentialUtil
 from .model import util
 from .model.model import OathToken
 
@@ -40,7 +40,7 @@ class Oauth2api(object):
             scopes = list of strings
         '''
 
-        credential = credentialutil.get_credentials(env_type)
+        credential = CredentialUtil.get_credentials(env_type)
 
         scopes = ' '.join(scopes)
         param = {
@@ -64,7 +64,7 @@ class Oauth2api(object):
         """
 
         logging.info("Trying to get a new application access token ... ")
-        credential = credentialutil.get_credentials(env_type)
+        credential = CredentialUtil.get_credentials(env_type)
         headers = util._generate_request_headers(credential)
         body = util._generate_application_request_body(credential, ' '.join(scopes))
 
@@ -88,7 +88,7 @@ class Oauth2api(object):
     def exchange_code_for_access_token(self, env_type, code):
         logging.info("Trying to get a new user access token ... ")
         logging.debug(f"env_type: {env_type} of type {type(env_type)}")
-        credential = credentialutil.get_credentials(env_type)
+        credential = CredentialUtil.get_credentials(env_type)
 
         headers = util._generate_request_headers(credential)
         body = util._generate_oauth_request_body(credential, code)
@@ -118,7 +118,7 @@ class Oauth2api(object):
 
         logging.info("Trying to get a new user access token ... ")
 
-        credential = credentialutil.get_credentials(env_type)
+        credential = CredentialUtil.get_credentials(env_type)
 
         headers = util._generate_request_headers(credential)
         body = util._generate_refresh_request_body(' '.join(scopes), refresh_token)
