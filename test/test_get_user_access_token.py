@@ -58,7 +58,7 @@ class TestGetApplicationCredential(unittest.TestCase):
         oauth2api_inst = Oauth2api()
         signin_url = oauth2api_inst.generate_user_authorization_url(Environment.SANDBOX, app_scopes)
         # todo: fix instance
-        code = TestUtil.get_authorization_code(signin_url)
+        # code = TestUtil.get_authorization_code(signin_url)
         user_token = oauth2api_inst.exchange_code_for_access_token(Environment.SANDBOX, code)
         self.assertIsNotNone(user_token.refresh_token)
         self.assertTrue(len(user_token.refresh_token) > 0)

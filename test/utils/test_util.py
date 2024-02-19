@@ -115,13 +115,17 @@ class TestUtil:
         self.click_recaptcha_checkboxes()
         form_userid = WebDriverWait(self.driver, LONG_WAIT).until(
             EC.presence_of_element_located((By.ID, "userid")))
-
-        logger.info(f"inputting userid into {form_userid}")
         logger.info(f"submitting userid: {self.userid}")
         form_userid.send_keys(self.userid)
-        # username =
-        # driver = get_chrome_driver(headless=headless_setting)
-        # return self.driver.current_url
+        self.driver.find_element(By.ID, "signin-continue-btn").submit()
+        logger.info(f"url after submitting userid {self.driver.current_url}")
+        logger.info("getting password element")
+        form_pw = WebDriverWait(self.driver, LONG_WAIT).until(
+            EC.presence_of_element_located((By.ID, "pass")))
+        logger.debug(f"password element: {form_pw}")
+        logger.info("submitting password")
+        form_pw.send_keys(self.password)
+        self.driver.find_element(By.ID, "sgnBt").submit()
 
 # todo: needed?
 def read_user_info(conf=None):
@@ -172,7 +176,6 @@ def get_authorization_code(signin_url):
     password = _user_credential_list[env_key][1]
     driver = get_chrome_driver(headless = headless_setting)
     driver.get(signin_url)
-    # todo: needed?
     click_recaptcha_checkboxes(driver)
 
 
