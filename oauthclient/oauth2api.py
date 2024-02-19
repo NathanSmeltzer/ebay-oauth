@@ -36,13 +36,11 @@ logging.basicConfig(level=logging.DEBUG, filename=LOGFILE,
 
 class Oauth2api():
     
-    # todo: change credentials to class instance
-    # credentials =
-    
     def __init__(self, environment: str = "production", credential_config_path: str = config("EBAY_CREDENTIALS")):
         self.environment = Environment.PRODUCTION if environment == "production" else Environment.SANDBOX
         # load credentials
         CredentialUtil.load(credential_config_path)
+        self.credential = CredentialUtil.get_credentials(self.environment)
 
 
     def generate_user_authorization_url(self, scopes: list, state=None):
@@ -50,12 +48,10 @@ class Oauth2api():
             scopes = list of strings
         '''
 
-        credential = CredentialUtil.get_credentials(self.environment)
-
         scopes = ' '.join(scopes)
         param = {
-            'client_id': credential.client_id,
-            'redirect_uri': credential.ru_name,
+            'client_id': self.credential.client_id,
+            'redirect_uri': self.credential.ru_name,
             'response_type': 'code',
             'prompt': 'login',
             'scope': scopes
@@ -74,9 +70,8 @@ class Oauth2api():
         """
 
         logging.info("Trying to get a new application access token ... ")
-        credential = CredentialUtil.get_credentials(self.environment)
-        headers = util._generate_request_headers(credential)
-        body = util._generate_application_request_body(credential, ' '.join(scopes))
+        headers = util._generate_request_headers(self.credential)
+        body = util._generate_application_request_body(self.credential, ' '.join(scopes))
 
         resp = requests.post(self.environment.api_endpoint, data=body, headers=headers)
         content = json.loads(resp.content)
@@ -98,10 +93,8 @@ class Oauth2api():
     def exchange_code_for_access_token(self, code):
         logging.info("Trying to get a new user access token ... ")
         logging.debug(f"self.environment: {self.environment} of type {type(self.environment)}")
-        credential = CredentialUtil.get_credentials(self.environment)
-
-        headers = util._generate_request_headers(credential)
-        body = util._generate_oauth_request_body(credential, code)
+        headers = util._generate_request_headers(self.credential)
+        body = util._generate_oauth_request_body(self.credential, code)
         resp = requests.post(self.environment.api_endpoint, data=body, headers=headers)
 
         content = json.loads(resp.content)
@@ -128,9 +121,7 @@ class Oauth2api():
 
         logging.info("Trying to get a new user access token ... ")
 
-        credential = CredentialUtil.get_credentials(self.environment)
-
-        headers = util._generate_request_headers(credential)
+        headers = util._generate_request_headers(self.credential)
         body = util._generate_refresh_request_body(' '.join(scopes), refresh_token)
         resp = requests.post(self.environment.api_endpoint, data=body, headers=headers)
         content = json.loads(resp.content)

@@ -26,7 +26,7 @@ class TestOAuth2API(unittest.TestCase):
     def test_get_access_token(self):
         refresh_token = config('REFRESH_TOKEN_VALID')
         oauth2api = Oauth2api(environment="production")
-        print(f"environment endpoint: {oauth2api.environment.web_endpoint}")
+        # print(f"environment endpoint: {oauth2api.environment.web_endpoint}")
 
 
         token = oauth2api.get_access_token(refresh_token, scopes=self.app_scopes)
@@ -48,8 +48,8 @@ class TestOAuth2API(unittest.TestCase):
             "https://api.ebay.com/oauth/api_scope",
         ]
         token = oauth2api.get_access_token(refresh_token, scopes=app_scopes_invalid)
-        print(f"token.access_token: {token.access_token} of type: {type(token.access_token)}")
-        print(token.error)
+        # print(f"token.access_token: {token.access_token} of type: {type(token.access_token)}")
+        # print(token.error)
         assert "400" in token.error
 
         # issued other client/expired - invalid or issued to another client
@@ -59,7 +59,7 @@ class TestOAuth2API(unittest.TestCase):
             "https://api.ebay.com/oauth/api_scope/sell.inventory",
         ]
         token = oauth2api.get_access_token(refresh_token, scopes=app_scopes)
-        print(f"token.access_token: {token.access_token} of type: {type(token.access_token)}")
-        print(token.error)
+        # print(f"token.access_token: {token.access_token} of type: {type(token.access_token)}")
+        # print(token.error)
         assert "400" in token.error
         assert "another client" in token.error
