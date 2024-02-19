@@ -1,12 +1,5 @@
-from unittest import TestCase
+from unittest import TestCase, skip
 
-from decouple import config
-from loguru import logger
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
-
-from test.utils.driver import get_chrome_driver
 from test.utils.test_util import TestUtil
 
 WAIT = 5
@@ -20,9 +13,8 @@ app_scopes = [
 ]
 
 
-# @skip
+@skip("Not currently working")
 class TestTestUtil(TestCase):
-    # todo: complete or remove
 
     def setUp(self) -> None:
         self.test_util = TestUtil()
@@ -33,27 +25,14 @@ class TestTestUtil(TestCase):
         assert self.test_util.userid
         assert self.test_util.password
 
-    # todo: finish
     def test_log_in(self):
         self.test_util.log_in()
 
-    # todo: fix
     def test_get_code_from_url(self):
         url = "https://app.example.com/accounts/login/?next=/users/ebay-auth/%3Fcode%3Dv%255E1.1%2523i%255E1%2523p%255E3%2523r%255E1%2523f%255E0%2523I%255E3%2523t%255EUl41XzY6Q0ZGNkUxNURGOTgwMjVFMDBENjkyOEEwNjUwNEVBMzlfMl8xI0VeMjYw%26expires_in%3D299"
-        # print(f"code in url? : {'code' in url}")
         code = self.test_util.get_code_from_url(url)
-        print(f"code: {code}")
         assert code
 
-    # todo: remove?
-    def test_signin_exp(self):
-        self.driver.get(config('PRODUCTION_AUTH_URL'))
-        # sbx
-        # self.driver.get(
-        #     "https://signin.sandbox.ebay.com/ws/eBayISAPI.dll?SignIn&AppName=NathanSm-OrderAut-SBX-2c22b8256-da03e591&ru=https%3A%2F%2Fauth.sandbox.ebay.com%2Foauth2%2Fauthorize%3Fclient_id%3DNathanSm-OrderAut-SBX-2c22b8256-da03e591%26redirect_uri%3DNathan_Smeltzer-NathanSm-OrderA-dntshp%26scope%3Dhttps%253A%252F%252Fapi.ebay.com%252Foauth%252Fapi_scope%2Bhttps%253A%252F%252Fapi.ebay.com%252Foauth%252Fapi_scope%252Fsell.inventory%2Bhttps%253A%252F%252Fapi.ebay.com%252Foauth%252Fapi_scope%252Fsell.marketing%2Bhttps%253A%252F%252Fapi.ebay.com%252Foauth%252Fapi_scope%252Fsell.account%2Bhttps%253A%252F%252Fapi.ebay.com%252Foauth%252Fapi_scope%252Fsell.fulfillment%26state%26response_type%3Dcode%26hd")
-        form_userid = WebDriverWait(self.driver, WAIT).until(
-            EC.presence_of_element_located((By.ID, "userid"))
-        )
-        logger.info("form_userid found")
-        form_userid.send_keys("test")
-        # form_userid = browser.find_element_by_id('userid')
+    def test_get_authorization_code(self):
+        code = self.test_util.get_authorization_code()
+        print(f"code: {code}")

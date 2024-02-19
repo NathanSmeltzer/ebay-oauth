@@ -7,6 +7,8 @@ https://tech.ebayinc.com/engineering/ebay-oauth-client-library-in-python-and-bes
 import os, sys
 import json
 
+from test.utils.test_util import TestUtil
+
 sys.path.insert(0, os.path.join(os.path.split(__file__)[0], '..'))
 from oauthclient.oauth2api import Oauth2api
 from oauthclient.credentialutil import CredentialUtil
@@ -41,9 +43,10 @@ class TestGetApplicationCredential(unittest.TestCase):
         """
         Use this for getting our business store user code for djproducts
         only works for production (not sandbox)"""
-        oauth2api_inst = Oauth2api()
-        signin_url = oauth2api_inst.generate_user_authorization_url(app_scopes, state="testval")
-        print(f"signin_url: {signin_url}")
+        # oauth2api_inst = Oauth2api()
+        # signin_url = oauth2api_inst.generate_user_authorization_url(app_scopes, state="testval")
+        # print(f"signin_url: {signin_url}")
+        test_util = TestUtil()
         # todo: add back
         # code = TestUtil.get_authorization_code(signin_url)
         # user_token = oauth2api_inst.exchange_code_for_access_token(Environment.PRODUCTION, code)
