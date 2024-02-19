@@ -44,7 +44,7 @@ def _generate_application_request_body(credential, scopes):
 
 def _generate_refresh_request_body(scopes, refresh_token):
     if refresh_token == None:
-        raise StandardError("credential object does not contain refresh_token and/or scopes")
+        raise Exception("credential object does not contain refresh_token and/or scopes")
     
     body = {
             'grant_type': 'refresh_token',

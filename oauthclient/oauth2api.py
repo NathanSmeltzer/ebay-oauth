@@ -90,6 +90,7 @@ class Oauth2api:
         return token
 
     def exchange_code_for_access_token(self, code):
+        """Only used in teesting"""
         logging.info("Trying to get a new user access token ... ")
         logging.debug(f"self.environment: {self.environment} of type {type(self.environment)}")
         headers = util._generate_request_headers(self.credential)
