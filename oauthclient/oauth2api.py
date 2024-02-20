@@ -17,10 +17,10 @@ limitations under the License.
 """
 
 import json
-import logging
+# import logging
 import urllib
 from datetime import datetime, timedelta
-# from loguru import logger
+from loguru import logger
 
 import requests
 from decouple import config
@@ -31,9 +31,9 @@ from .model import util
 from .model.model import OathToken
 
 # todo: needed?
-LOGFILE = 'eBay_Oauth_log.txt'
-logging.basicConfig(level=logging.DEBUG, filename=LOGFILE,
-                    format="%(asctime)s: %(levelname)s - %(funcName)s: %(message)s", filemode='w')
+# LOGFILE = 'eBay_Oauth_log.txt'
+# logger.basicConfig(level=logger.DEBUG, filename=LOGFILE,
+#                     format="%(asctime)s: %(levelname)s - %(funcName)s: %(message)s", filemode='w')
 
 default_scopes = [
               "https://api.ebay.com/oauth/api_scope/sell.inventory",
@@ -70,7 +70,7 @@ class Oauth2api:
             returns credential object
         """
 
-        logging.info("Trying to get a new application access token ... ")
+        logger.info("Trying to get a new application access token ... ")
         headers = util._generate_request_headers(self.credential)
         body = util._generate_application_request_body(self.credential, ' '.join(scopes))
 
@@ -86,22 +86,22 @@ class Oauth2api:
 
         else:
             token.error = str(resp.status_code) + ': ' + content['error_description']
-            logging.error("Unable to retrieve token.  Status code: %s - %s", resp.status_code,
+            logger.error("Unable to retrieve token.  Status code: %s - %s", resp.status_code,
                           requests.status_codes._codes[resp.status_code])
-            logging.error("Error: %s - %s", content['error'], content['error_description'])
+            logger.error("Error: %s - %s", content['error'], content['error_description'])
         return token
 
     def exchange_code_for_access_token(self, code):
         """Only used in teesting"""
-        logging.info("Trying to get a new user access token ... ")
-        logging.debug(f"self.environment: {self.environment} of type {type(self.environment)}")
+        logger.info("Trying to get a new user access token ... ")
+        logger.debug(f"self.environment: {self.environment} of type {type(self.environment)}")
         headers = util._generate_request_headers(self.credential)
         body = util._generate_oauth_request_body(self.credential, code)
         resp = requests.post(self.environment.api_endpoint, data=body, headers=headers)
 
         content = json.loads(resp.content)
         # todo: remove
-        logging.debug(f"content: \n{content}")
+        logger.debug(f"content: \n{content}")
         token = OathToken()
 
         if resp.status_code == requests.codes.ok:
@@ -113,9 +113,9 @@ class Oauth2api:
                 seconds=int(content['refresh_token_expires_in'])) - timedelta(minutes=5)
         else:
             token.error = str(resp.status_code) + ': ' + content['error_description']
-            logging.error("Unable to retrieve token.  Status code: %s - %s", resp.status_code,
+            logger.error("Unable to retrieve token.  Status code: %s - %s", resp.status_code,
                           requests.status_codes._codes[resp.status_code])
-            logging.error("Error: %s - %s", content['error'], content['error_description'])
+            logger.error("Error: %s - %s", content['error'], content['error_description'])
         return token
 
     def get_access_token(self, refresh_token, scopes=default_scopes):
@@ -123,7 +123,7 @@ class Oauth2api:
         refresh token call
         """
 
-        logging.info("Trying to get a new user access token ... ")
+        logger.info("Trying to get a new user access token ... ")
 
         headers = util._generate_request_headers(self.credential)
         body = util._generate_refresh_request_body(' '.join(scopes), refresh_token)
@@ -139,7 +139,7 @@ class Oauth2api:
                 minutes=5)
         else:
             token.error = str(resp.status_code) + ': ' + content['error_description']
-            logging.error("Unable to retrieve token.  Status code: %s - %s", resp.status_code,
+            logger.error("Unable to retrieve token.  Status code: %s - %s", resp.status_code,
                           requests.status_codes._codes[resp.status_code])
-            logging.error("Error: %s - %s", content['error'], content['error_description'])
+            logger.error("Error: %s - %s", content['error'], content['error_description'])
         return token

@@ -1,12 +1,12 @@
 import unittest
 
 from decouple import config
-
+import responses
 from oauthclient.credentialutil import CredentialUtil
 from oauthclient.oauth2api import Oauth2api
 
 
-class TestOAuth2API(unittest.TestCase):
+class UserAccessTokens(unittest.TestCase):
     app_scopes = [
         "https://api.ebay.com/oauth/api_scope/sell.fulfillment",
         "https://api.ebay.com/oauth/api_scope/sell.inventory",
@@ -59,3 +59,23 @@ class TestOAuth2API(unittest.TestCase):
         # print(token.error)
         assert "400" in token.error
         assert "another client" in token.error
+
+    @responses.activate
+    def test_exchange_code_for_access_token(self):
+        """Mocks resquests response. Not live"""
+        oauth2api = Oauth2api(environment="production")
+        access_token = "v^1.1#i^1#I^3#f^0#r^0#p^3#t^H4sIAAAAAAA2+SOtRUIkKDRyq+IeBEqsvZt+S/bLQI1MxoAAA=="
+        # example from https://developer.ebay.com/api-docs/static/oauth-auth-code-grant-request.html
+        exchange_code_response = {
+            "access_token": access_token,
+            "expires_in": 7200,
+            "refresh_token": access_token,
+            "refresh_token_expires_in": 47304000,
+            "token_type": "User Access Token"
+        }
+        responses.add(responses.POST, oauth2api.environment.api_endpoint,
+                      json=exchange_code_response, status=200)
+        token = oauth2api.exchange_code_for_access_token("fakecode")
+        print(token)
+        print(type(token))
+        assert token.access_token == access_token

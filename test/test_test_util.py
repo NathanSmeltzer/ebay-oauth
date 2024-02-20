@@ -12,8 +12,8 @@ app_scopes = [
     "https://api.ebay.com/oauth/api_scope/sell.fulfillment"
 ]
 
-
-@skip("Not currently working")
+# todo:
+# @skip("Not currently working")
 class TestTestUtil(TestCase):
 
     def setUp(self) -> None:
