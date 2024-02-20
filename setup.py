@@ -6,13 +6,12 @@ with open("README.adoc", "r") as fh:
 setuptools.setup(
     name="ebay-oauth",
     packages=setuptools.find_packages(),
-    version="0.0.2",
+    version="0.0.3",
     description="eBay Oauth Client",
     long_description=long_description,
     author="Logistero Ltd dba ShipAware",
     author_email="nathan.smeltzer@gmail.com",
-    url="https://gitlab.com/Smeltzer/ebay-oauth",
-    download_url="https://gitlab.com/Smeltzer/ebay-oauth/-/archive/master/selenium-browser-shopper-master.zip",
+    url="https://github.com/NathanSmeltzer/ebay-oauth",
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
