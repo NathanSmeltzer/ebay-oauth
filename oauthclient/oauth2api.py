@@ -17,7 +17,6 @@ limitations under the License.
 """
 
 import json
-# import logging
 import urllib
 from datetime import datetime, timedelta
 from loguru import logger
@@ -29,11 +28,6 @@ from oauthclient.model.model import Environment
 from .credentialutil import CredentialUtil
 from .model import util
 from .model.model import OathToken
-
-# todo: needed?
-# LOGFILE = 'eBay_Oauth_log.txt'
-# logger.basicConfig(level=logger.DEBUG, filename=LOGFILE,
-#                     format="%(asctime)s: %(levelname)s - %(funcName)s: %(message)s", filemode='w')
 
 default_scopes = [
               "https://api.ebay.com/oauth/api_scope/sell.inventory",
@@ -100,8 +94,6 @@ class Oauth2api:
         resp = requests.post(self.environment.api_endpoint, data=body, headers=headers)
 
         content = json.loads(resp.content)
-        # todo: remove
-        logger.debug(f"content: \n{content}")
         token = OathToken()
 
         if resp.status_code == requests.codes.ok:

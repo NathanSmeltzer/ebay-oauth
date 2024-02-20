@@ -6,7 +6,7 @@ from oauthclient.credentialutil import CredentialUtil
 from oauthclient.oauth2api import Oauth2api
 
 
-class UserAccessTokens(unittest.TestCase):
+class TestUserAccessTokens(unittest.TestCase):
     app_scopes = [
         "https://api.ebay.com/oauth/api_scope/sell.fulfillment",
         "https://api.ebay.com/oauth/api_scope/sell.inventory",
@@ -79,3 +79,30 @@ class UserAccessTokens(unittest.TestCase):
         print(token)
         print(type(token))
         assert token.access_token == access_token
+
+
+class TestApplicationTokens(unittest.TestCase):
+    app_scopes = ["https://api.ebay.com/oauth/api_scope", "https://api.ebay.com/oauth/api_scope"]
+    invalid_app_scopes = ["https://api.ebay.com/oauth/api_scope", "https://api.ebay.com/oauth/api_scope/sell.inventory"]
+
+    def test_invalid_oauth_scope(self):
+        oauth2api_inst = Oauth2api()
+        app_token = oauth2api_inst.get_application_token(self.invalid_app_scopes)
+        self.assertIsNone(app_token.access_token)
+        self.assertIsNotNone(app_token.error)
+        print('\n *** test_invalid_oauth_scope ***\n', app_token)
+
+    def test_client_credentials_grant_sandbox(self):
+        oauth2api = Oauth2api(environment="sandbox")
+        app_token = oauth2api.get_application_token(self.app_scopes)
+        self.assertIsNone(app_token.error)
+        self.assertIsNotNone(app_token.access_token)
+        self.assertTrue(len(app_token.access_token) > 0)
+        print('\n *** test_client_credentials_grant_sandbox ***:\n', app_token)
+
+    def test_client_credentials_grant_production(self):
+        oauth2api = Oauth2api(environment="production")
+        app_token = oauth2api.get_application_token(self.app_scopes)
+        self.assertIsNone(app_token.error)
+        self.assertIsNotNone(app_token.access_token)
+        self.assertTrue(len(app_token.access_token) > 0)

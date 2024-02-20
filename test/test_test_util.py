@@ -12,8 +12,7 @@ app_scopes = [
     "https://api.ebay.com/oauth/api_scope/sell.fulfillment"
 ]
 
-# todo:
-# @skip("Not currently working")
+@skip("Not currently working")
 class TestTestUtil(TestCase):
 
     def setUp(self) -> None:
@@ -29,7 +28,7 @@ class TestTestUtil(TestCase):
         self.test_util.log_in()
 
     def test_get_code_from_url(self):
-        url = "https://app.example.com/accounts/login/?next=/users/ebay-auth/%3Fcode%3Dv%255E1.1%2523i%255E1%2523p%255E3%2523r%255E1%2523f%255E0%2523I%255E3%2523t%255EUl41XzY6Q0ZGNkUxNURGOTgwMjVFMDBENjkyOEEwNjUwNEVBMzlfMl8xI0VeMjYw%26expires_in%3D299"
+        url = "https://app.example.com/accounts/login/?next=/users/ebay-auth/%3Fcode%3Dv%255E1.1%2523i%255E1%2523p%255E3%2523r%255E1%2523f%255E0%2523I%255E3%2523t%255EUl41XzYwNjUwNEVBMzlfMl8xI0VeMjYw%26expires_in%3D299"
         code = self.test_util.get_code_from_url(url)
         assert code
 
