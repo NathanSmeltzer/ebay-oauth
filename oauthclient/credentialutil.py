@@ -17,8 +17,12 @@ limitations under the License.
 """
 import yaml, json
 import logging
+
+from . import logger
 from .model.model import Environment, Credentials
-from loguru import logger
+from decouple import config
+
+logging.getLogger(config("LOGGER_NAME", default="ebay")).setLevel(config("LOG_LEVEL", default="INFO"))
 
 user_config_ids = ["sandbox-user", "production-user"]
 
@@ -32,7 +36,7 @@ class CredentialUtil(object):
     @classmethod
     def load(cls, app_config_path):
         logging.info("(logging) Loading credential configuration file at: %s", app_config_path)
-        logger.info("(loguru) Loading credential configuration file at: %s", app_config_path)
+        logger.info("(logger) Loading credential configuration file at: %s", app_config_path)
         with open(app_config_path, 'r') as f:
             if app_config_path.endswith('.yaml') or app_config_path.endswith('.yml'):
                 content = yaml.load(f)
