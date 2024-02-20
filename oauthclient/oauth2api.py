@@ -19,12 +19,12 @@ limitations under the License.
 import json
 import urllib
 from datetime import datetime, timedelta
-from loguru import logger
 
 import requests
 from decouple import config
 
 from oauthclient.model.model import Environment
+from . import logger
 from .credentialutil import CredentialUtil
 from .model import util
 from .model.model import OathToken
@@ -119,9 +119,13 @@ class Oauth2api:
 
         headers = util._generate_request_headers(self.credential)
         body = util._generate_refresh_request_body(' '.join(scopes), refresh_token)
+        # todo: remove
+        logger.debug(f"get_access_token headers: {headers}")
+        logger.debug(f"get_access_token body: {body}")
         resp = requests.post(self.environment.api_endpoint, data=body, headers=headers)
         content = json.loads(resp.content)
-
+        # todo: remove
+        logger.debug(f"get_access_token content: {content}")
         token = OathToken()
         token.token_response = content
 

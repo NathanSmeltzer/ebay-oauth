@@ -6,7 +6,7 @@ with open("README.adoc", "r") as fh:
 setuptools.setup(
     name="ebay-oauth",
     packages=setuptools.find_packages(),
-    version="0.0.5",
+    version="0.0.6",
     description="eBay Oauth Client ShipAware Fork",
     long_description=long_description,
     author="Logistero Ltd dba ShipAware",

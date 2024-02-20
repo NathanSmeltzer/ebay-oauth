@@ -35,8 +35,7 @@ class CredentialUtil(object):
      
     @classmethod
     def load(cls, app_config_path):
-        logging.info("(logging) Loading credential configuration file at: %s", app_config_path)
-        logger.info("(logger) Loading credential configuration file at: %s", app_config_path)
+        logger.info("Loading credential configuration file at: %s", app_config_path)
         with open(app_config_path, 'r') as f:
             if app_config_path.endswith('.yaml') or app_config_path.endswith('.yml'):
                 content = yaml.load(f)
@@ -67,8 +66,8 @@ class CredentialUtil(object):
         """
         env_config_id: environment.PRODUCTION.config_id or environment.SANDBOX.config_id
         """
-        logger.info(f"env_type in get_credentials: {env_type}")
-        logger.info(f"env_type __dict__: {env_type.__dict__}")
+        logger.debug(f"env_type in get_credentials: {env_type}")
+        logger.debug(f"env_type __dict__: {env_type.__dict__}")
         if len(cls._credential_list) == 0:
             msg = "No environment loaded from configuration file"
             logging.error(msg)
