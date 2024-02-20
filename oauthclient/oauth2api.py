@@ -1,21 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Copyright 2019 eBay Inc.
- 
-Licensed under the Apache License, Version 2.0 (the "License");
-You may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
-
 import json
 import urllib
 from datetime import datetime, timedelta
@@ -119,13 +101,8 @@ class Oauth2api:
 
         headers = util._generate_request_headers(self.credential)
         body = util._generate_refresh_request_body(' '.join(scopes), refresh_token)
-        # todo: remove
-        logger.debug(f"get_access_token headers: {headers}")
-        logger.debug(f"get_access_token body: {body}")
         resp = requests.post(self.environment.api_endpoint, data=body, headers=headers)
         content = json.loads(resp.content)
-        # todo: remove
-        logger.debug(f"get_access_token content: {content}")
         token = OathToken()
         token.token_response = content
 

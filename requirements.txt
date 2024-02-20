@@ -3,4 +3,3 @@ requests
 PyYAML
 webdriver-manager==4.0.0
 python-decouple
-loguru
